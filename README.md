@@ -1,4 +1,16 @@
-﻿# JiSuanKe_Training_Challenge
+<head>
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+            inlineMath: [['$','$']]
+            }
+        });
+    </script>
+</head>
+
+# JiSuanKe_Training_Challenge
 
 #### 0x01-0x04 题目难度一般且较经典，故此处略
 
