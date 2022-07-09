@@ -78,7 +78,7 @@ border(s+a)=\left\{
  border(border(s)+x+a),x\neq a \\
  border(s)+x  ,x=a \\
 \end{matrix}
-\right.
+\right\.
 $
 
 ##### 注：这里x为border(s)之后的一位字符。
