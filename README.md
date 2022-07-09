@@ -1,1 +1,453 @@
+﻿# JiSuanKe_Training_Challenge
+
+#### 0x01-0x04 题目难度一般且较经典，故此处略
+
+#### 0x05-0x0a 题目均在[nanti.jisuanke.com]()
+#### 题目后给出一些类似题目以供练习
+
+ps:有未解答的疑惑和补充指正可以提issue，有不同的思路希望可以交流，可以新建自己的分支push代码和思路，我的源代码在[MaybeMia_Git](https://github.com/MayMistery/Algorithm-Mod)
+
+# <u>***请勿抄袭***</u>
+<br><br><br>
+# 0x00 前提知识储备
+ 1. [链表](http://data.biancheng.net/view/160.html)
+ 2. [树形dp](https://oi-wiki.org/dp/tree/)
+ 3. [tier树](https://www.luogu.com.cn/problem/solution/P8306)
+ 4. [kmp](https://www.luogu.com.cn/problem/solution/P3375)
+ 5. [ac自动机](https://www.luogu.com.cn/problem/solution/P3808)
+ 6. [状压dp](https://www.cnblogs.com/ljy-endl/p/11627018.html)
+ 7. [拓展欧拉定理](https://www.luogu.com.cn/problem/solution/P5091)
+ 8. [费马小定理](https://zhuanlan.zhihu.com/p/87611586)
+ 9. [乘法逆元](https://www.luogu.com.cn/problem/solution/P3811)
+ 10. [线段树](https://www.luogu.com.cn/problem/list?keyword=%E7%BA%BF%E6%AE%B5%E6%A0%91&page=1)
+ 11. [并查集](https://www.luogu.com.cn/problem/solution/P3367)
+ 12. [差分与前缀和](https://blog.csdn.net/weixin_45629285/article/details/111146240) 
+ 13. [最大子段和](https://blog.csdn.net/niteip/article/details/7444973)
+ 14. [背包问题](https://zhuanlan.zhihu.com/p/93857890)
+ 15. [质因数分解](https://www.luogu.com.cn/problem/solution/P1075)
+ 16. [STL库](https://zhuanlan.zhihu.com/p/344558356)
+ 17. [贪心](https://zhuanlan.zhihu.com/p/72734416)
+ 18. [快读](https://blog.csdn.net/tkzlfg/article/details/110288548)
+
+<br><br><br>
+
+# 0x05 T3650_字符串
+
+####  难度：提高T4 -> 省选
+
+#### 类似题目：[AHOI2005 病毒检测](https://www.luogu.com.cn/problem/P2536)
+
+#### 思路简述：链表 + Tier维护border的查询， dfs求border，
+
+##### 详解：
+
+$$
+引：对于字符串s
+$$
+
+$$
+pre(s,x) 表示字符串 s 长度为 x 的前缀
+$$
+
+$$
+suf(s,x) 表示字符串 s 长度为 x 的后缀
+$$
+
+$$
+若 0≤r<|s|, pre(s,r)=suf(s,r)，则称 r 为 s 的一个 border
+$$
+
+##### 	注意到题目所定义的独特前缀与border的定义类似，而border也是KMP中所定义的next指针（或fail）。题目可转化为求border并维护border查询。注意到题目复杂度要求为接近O（nlog(n)）,考虑在tier树上维护border查询。对于求border，若用KMP求每个链的border时间复杂度接近n方，考虑树形dp，考虑到当对于字符串s增加一个字符a时，有如下表达式
+
+
+$$
+border(s+a)=\left\{
+\begin{matrix}
+ border(border(s)+x+a),x\neq a \\
+ border(s)+x  ,x=a 
+\end{matrix}
+\right.
+$$
+
+##### 注：这里x为border(s)之后的一位字符。
+
+
+```c
+void dfs(int x)
+{
+    memcpy(lim[x], lim[m[x].bor], sizeof(lim[x]));
+    m[x].pre[0] = m[x].bor;
+    for (int i = 1; i < MAXL; i++)
+        m[x].pre[i] = m[m[x].pre[i - 1]].pre[i - 1];
+    for (struct LIST *i = m[x].H; i != NULL; i = i->next)
+        {
+            struct Query q = i->data;
+            int l = find(x, q.l), r = find(x, q.r + 1);  //find in tier
+            ans[q.idx] = l - r;
+        }
+    for (int i = 0; i < T; i++)
+    {
+        int y = m[x].nx[i];
+        if (!y)
+            continue;
+        m[y].bor = lim[m[x].bor][i];
+        int old = lim[x][i];
+        lim[x][i] = y;
+        dfs(y);
+        lim[x][i] = old;
+    }
+}
+```
+
+<br><br>
+
+# 0x06 T3646_Good Karma
+
+#### 难度：提高T3
+#### 类似题目：[USACO06NOV Corn Fields G](https://www.luogu.com.cn/problem/P1879)
+
+#### 思路简述：推导公式，预处理后动态规划（含乘法逆元
+
+##### 详解：可以把概率看作边权，注意到n<=17，考虑状态压缩。（详解待补充
+
+```c
+    for (int S = 0; S <= U; S++)
+    {
+        if (!(S & 1))
+            continue;
+        f[S] = 1;
+        int S0 = (S >> 1), T;
+        for (int T0 = (S0 - 1) & S0; T0; T0 = (T0 - 1) & S0)
+        {
+            T = ((T0 << 1) | 1);
+            //mim[] is the pre_calculate Multiplicative inverse modulo 
+            f[S] = (f[S] - ((((long long)f[T] * g[S]) % MOD * mim[T]) % MOD * mim[S ^ T]) % MOD + MOD) % MOD;
+        }
+        T = 1;
+        if (S != T)
+            f[S] = (f[S] - ((((long long)f[T] * g[S]) % MOD * mim[T]) % MOD * mim[S ^ T]) % MOD + MOD) % MOD;
+        
+        int tt = 0, SS = S; 
+        while (SS)
+	    {
+          SS &= (SS - 1);
+          tt++;
+        }
+
+        ans = (ans + ((((((long long)tt * tt) % MOD * f[S]) % MOD * g[U]) % MOD * mim[S]) % MOD * mim[U ^ S]) % MOD) % MOD;
+    }
+```
+
+<br><br>
+
+## 0x07 T3637_知识探讨会
+
+#### 难度：提高T4 -> 省选（个人感觉最难
+#### 类似题目： [P1558 色板游戏](https://www.luogu.com.cn/problem/P1558)
+#### 思路简述：线段树或并查集后求类似区间最大子段和
+
+
+
+> 朋友思路：
+>
+> 题目要求从1到n扫，扫到一个就执行一次区间覆盖。我们对s之前的先一个个处理（用线段树实现区间覆盖和单点查询），处理完后我们s在最前面。然后我们先不管s,考虑每一个后面的元素去修改它那个区间时候的01状态，因为是在环上一个个扫，扫到它的时候还没有扫到后面的，所以后面的不会对其造成影响；而前面的，因为是覆盖，只能是离他最近的且覆盖区间包含它的那一个最终覆盖了它，即：当前元素第一次扫到时的01状态刚好为它前面离他最近且覆盖区间包含它的那个元素第一次被扫到时的01状态与1异或的结果。那么我们顺序获取这个每个元素第一次被扫到时的01状态值即可。其中找到当前元素前面的离他最近的且区间包含它的还是用线段树维护（一个一个元素做，做到一个元素将它覆盖的区间区间覆盖为它的编号，这样单点查询即可获取答案）。然后考虑题目中要求的最后的01状态，我们如上已经知道每个元素刚被扫到时的01状态，相当于知道了每个元素去覆盖它那个区间时的01状态，那么我们只要知道每个元素最终被谁覆盖即可知道它最终的01状态。方法用线段树同上。
+> 例如：6最终被9覆盖，9之前最近覆盖它的是7，7之前最近覆盖它的是4，4之前没有被任何区间覆盖，s=2,那么我们发现，6最终的值与4的值有直接关联，更具体的，若上面说的覆盖路径长度是偶数，6最终的值刚好为4的值，若奇数，6的值为4的值与1异或，而任何其它元素的值对6的值可以认为没有影响。因此，我们只需要对每个值都知道它被谁直接影响即可，这按前面所说的步骤在图上往前找即可。
+> 最终我们知道每个元素被谁直接影响后，我们反过来统计每个元素会直接影响多少个其它元素，我们可以知道若该元素为0，最终可以导致多少元素为1，若该元素为1，最终可以导致多少元素为1
+> 这样我们环上进行类似求区间和最大值就找到了答案
+
+##### 详解：我在他的思路基础上使用并查集代替线段树（简单且可避免卡常）维护每个点最后被哪个点覆盖（分别计算轮到该点前和轮到该点后）。维护的具体方法是维护当前已经区间覆盖的区间的右端点， 从n到1枚举，覆盖未覆盖的点，同时合并两端的区间，遇到覆盖到的点时，转而维护该点所在区间右端点。
+
+
+
+```c
+//Union-Find set Part
+
+//Merge region to creat connected block 
+void Merge(int ll, int rr, int id, int *st)
+{
+    FOR(ll,rr)
+    {
+        if (st[i])
+            i = rnk[Find(i)];
+        else
+        {
+            st[i] = id;
+            if (st[i - 1])
+                Union(Find(i - 1), Find(i));
+            if (st[i + 1])
+                Union(Find(i), Find(i + 1));
+        }
+    }
+}
+
+//simulation part
+void preSimul(int ll, int rr)
+{
+    //slove bef
+    FOR(1,n)
+        f[i] = rnk[i] = i, bef[i] = 0;
+    
+    ROF(rr,ll-1)
+        l[i] > r[i] ? Merge(l[i], n, i, bef), Merge(1, r[i], i, bef) : Merge(l[i], r[i], i, bef);
+    
+    //slove aft
+    FOR(1,n)
+        f[i] = rnk[i] = i, aft[i] = 0;
+    
+    ROF(rr,ll-1)   //reverse for
+    {
+        if (l[i] > r[i])
+        {
+            if (i < n)
+                Merge((l[i] < i + 1) ? (i + 1) : l[i], n, i, aft);
+            
+            if (r[i] > i)
+                Merge(i + 1, r[i], i, aft);
+        }
+        else if (r[i] > i)
+            Merge((l[i] < i + 1) ? (i + 1) : l[i], r[i], i, aft);
+    }
+}
+
+    //Simul 1 - S-1
+    
+    //cnt influence opposite
+    
+    //cal Maximum subsequence sum in circle
+    
+```
+
+
+<br><br>
+
+
+## 0x08 T3649_最高段位
+
+#### 难度：提高T3
+
+#### 思路简述：dp
+
+详解 ：对于所获得积分可以列出式子
+
+
+$$
+max\left\{ 
+1 + B - (n - B) + \sum \lfloor \frac {L}{d} \rfloor , 0\\
+\right\}.
+$$
+找到递推式求解最高的连续胜场加分和即可，注意到若枚举连续胜场进行状态转移复杂度接近
+$$
+O(nB^2)
+$$
+而题目只接受nB或者n方算法，考虑贪心，在可能能加星时，直接加，可得方程（到i局赢了j场
+$$
+dp[i][j][1]=max\left\{ \begin{matrix}
+max\left\{ 
+dp[i-1][j-1][1],dp[i-1][j-1][0]
+\right\}\\
+max\left\{ 
+dp[i-d][j-d][1],dp[i-d][j-d][0]
+\right\}+1
+\end{matrix}
+\right
+.\\
+dp[i][j][0]=max\left\{ 
+dp[i-1][j][1],dp[i-1][j][0]
+\right\}
+$$
+
+```c
+//dp part     
+f[0][0][0] = 0;
+
+    for (int i = 1; i <= n; i++)
+        for (int j = 0; j <= i - cnt0[i] && j <= B; j++)
+        {
+            if (s[i] != '1')
+                f[i][j][0] = Max(f[i - 1][j][0], f[i - 1][j][1]);
+            if (s[i] != '0' && j != 0)
+            {
+                f[i][j][1] = Max(f[i - 1][j - 1][0], f[i - 1][j - 1][1]);
+                if (i >= d && j >= d && cnt0[i] - cnt0[i - d] == 0)
+                    f[i][j][1] = Max(f[i][j][1], Max(f[i - d][j - d][0], f[i - d][j - d][1]) + 1);
+            }
+        }
+
+    x = (2 * B - n + f[n][B][1]) / 5;
+    y = (2 * B - n + f[n][B][0] + 1) / 5;
+
+    Max(1, Max(x, y) + 1)
+
+```
+
+
+
+
+<br><br>
+## 0x09 T3636_朋友圈
+
+#### 难度：提高T2
+
+#### 思路简述：质因数分解，求序列最小公比，O(nlogn*logn)
+
+详解：注意到q等于1时问题朴素，下考虑q不为1时
+
+ 注意到序列长度有上界lg(n)，子序列中的两个数有整除关系，可知若a,b两数在子序列里，有a，b的商为公比的倍数，于是我们质因数分解这个商，求最小可能的公比，通过判断相邻两数比是否为最小公比的整数幂，即可在O（nlogn）复杂度下遍历序列并得出答案。
+
+```c
+void fac_init(ll x)
+{
+    fac[x] = -1;
+    ll s = Max(a[x], a[x - 1]), t = Min(a[x], a[x - 1]);
+    if (s % t == 0)
+    {
+        ll div = s / t, ori = 1, pfac = -1;
+        bool flag = 1;
+        
+        for (int i = 2; i <= 1000; i++)
+        {
+            tmp = 0;
+            while (div % i == 0)
+            {
+                div /= i;
+                tmp++;
+            }
+            // i^tmp
+            if (tmp)
+            {
+                if (pfac == -1)
+                    pfac = tmp;
+                else if (pfac != tmp)
+                {
+                    flag = 0;
+                    return;
+                }
+                ori *= i;
+            }
+        }
+        if (div == 1)
+        {
+            fac[x] = ori; // ori^pfac = x/y
+            po[x] = pfac * (a[x] > a[x-1] ? (1):(-1)); // power of ori
+        }
+    }
+}
+
+//in main to find the sub_seq
+    for (int i = 0; i < n; i++)
+    {
+        S.clear();
+        q = -1, tmp = 0;
+
+        for (int j = 1; i + j - 1 < n; j++)
+        {
+            if (S.empty())
+                S.insert(0);
+            else
+            {
+                if (fac[i + j - 1] == -1)
+                    break;
+                if (q == -1)
+                    q = fac[i + j - 1];
+                else if(fac[i + j - 1] != q)
+                    break;
+
+                tmp += po[i + j - 1];
+                if (!S.count(tmp))
+                {
+                    S.insert(tmp);
+                    ans = Max(ans, j);
+                }
+                else
+                    break;
+            }
+        }
+    }
+```
+
+
+
+<br><br><br>
+
+## 0x0a T3635_宝箱
+
+#### 难度：提高T2
+#### 类似题目：[USACO10MAR Great Cow Gathering G](https://www.luogu.com.cn/problem/P2986)
+#### 思路简述：树形dp(求反
+
+##### 详解：若暴力枚举或正常树形dp时间复杂度高于n方，显然不合题意，题目需要O(nlogn)算法
+
+##### 一般树形dp方程，t为s儿子 ,考察s内s选不选时的方案数量
+
+$$
+dp[s][1] = \prod_t dp[t][0] 
+\\
+dp[s][0] = \prod_{t-t0}dp[t][0] + dp[t0][1]
+$$
+
+##### 使用常用思路求反，求出s选不选时子树外部的方案数，有方程
+
+$$
+\frac{dp[s][0]}{dp[t][0]+dp[t][1]}为不选s时s子树除去t外的选点方案
+\\
+\frac {dp[s][1]}{dp[t][1]}为选s时s子树除去t外的选点方案
+$$
+
+
+$$
+g[t][0] = g[s][0]  \times \frac{dp[s][0]}{dp[t][0]+dp[t][1]}+g[s][1] \times \frac {dp[s][1]}{dp[t][1]}\\g[t][1] = g[s][0]  \times \frac{dp[s][0]}{dp[t][0]+dp[t][1]}
+$$
+
+```c
+void dfsf(ll u, ll fa)
+{
+    dp[u][0] = dp[u][1] = 1;
+    for (int i = head[u]; i; i = e[i].next)
+    {
+        ll v = e[i].to;
+        if (v == fa)
+            continue;
+        d[v] = d[u] + 1;
+        dfsf(v, u);
+        dp[u][0] = (dp[u][0] * (dp[v][0] + dp[v][1]) % MOD) % MOD;
+        dp[u][1] = (dp[u][1] * dp[v][0]) % MOD;
+    }
+}
+
+void dfsg(ll u, ll fa)
+{
+    if (u == 1)
+        g[u][0] = g[u][1] = 1;
+
+    for (int i = head[u]; i; i = e[i].next)
+    {
+        ll v = e[i].to;
+        if (v == fa)
+            continue;
+        //dfsg(v, u);
+        ll mim = pre_fpm(dp[v][0] + dp[v][1]);//mul inv mod
+        g[v][1] = g[u][0] * dp[u][0] % MOD * mim % MOD;
+        g[v][0] = (g[u][0] * dp[u][0] % MOD * mim % MOD + g[u][1] * dp[u][1] % MOD * pre_fpm(dp[v][0]) % MOD) % MOD;
+        dfsg(v, u); 
+    }
+}
+
+//in main to calu the ans
+    for (int i = 1; i < n; i++)
+    {
+        if (d[ud[i]] > d[vd[i]])
+            swap(&ud[i], &vd[i]);
+
+        ll u = ud[i], v = vd[i];
+        ll mim1 = dp[u][1] * pre_fpm(dp[v][0]) % MOD, mim2 = dp[u][0] * pre_fpm(dp[v][0] + dp[v][1]) % MOD;
+        ans[i] = ((dp[v][1] + dp[v][0]) % MOD * ((g[u][1] * mim1) % MOD) % MOD + ((g[u][0] * mim2) % MOD * dp[v][1] % MOD)) % MOD;
+        printf("%lld\n", ans[i]);
+    }
+```
+
+
+
+ 
+
+
 
