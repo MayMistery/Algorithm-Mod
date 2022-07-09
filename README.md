@@ -53,21 +53,21 @@ ps:有未解答的疑惑和补充指正可以提issue，有不同的思路希望
 
 ##### 详解：
 
-$$
+$
 引：对于字符串s
-$$
+$
 
-$$
+$
 pre(s,x) 表示字符串 s 长度为 x 的前缀
-$$
+$
 
-$$
+$
 suf(s,x) 表示字符串 s 长度为 x 的后缀
-$$
+$
 
-$$
+$
 若 0≤r<|s|, pre(s,r)=suf(s,r)，则称 r 为 s 的一个 border
-$$
+$
 
 ##### 	注意到题目所定义的独特前缀与border的定义类似，而border也是KMP中所定义的next指针（或fail）。题目可转化为求border并维护border查询。注意到题目复杂度要求为接近O（nlog(n)）,考虑在tier树上维护border查询。对于求border，若用KMP求每个链的border时间复杂度接近n方，考虑树形dp，考虑到当对于字符串s增加一个字符a时，有如下表达式
 
@@ -76,9 +76,9 @@ $
 border(s+a)=\left\{
 \begin{matrix}
  border(border(s)+x+a),x\neq a \\
- border(s)+x  ,x=a 
+ border(s)+x  ,x=a \\
 \end{matrix}
-\right.
+\right\.
 $
 
 ##### 注：这里x为border(s)之后的一位字符。
@@ -246,7 +246,7 @@ $
 
 max\left\{ 
 1 + B - (n - B) + \sum \lfloor \frac {L}{d} \rfloor , 0
-\right\.}.
+\right.}.
 
 $
 
