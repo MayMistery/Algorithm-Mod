@@ -235,18 +235,22 @@ void preSimul(int ll, int rr)
 
 详解 ：对于所获得积分可以列出式子
 
-
-$$
+<br>
+$
 max\left\{ 
 1 + B - (n - B) + \sum \lfloor \frac {L}{d} \rfloor , 0\\
 \right\}.
-$$
+$
+<br>
 找到递推式求解最高的连续胜场加分和即可，注意到若枚举连续胜场进行状态转移复杂度接近
-$$
+<br>
+$
 O(nB^2)
-$$
+$
+<br>
 而题目只接受nB或者n方算法，考虑贪心，在可能能加星时，直接加，可得方程（到i局赢了j场
-$$
+<br>
+$
 dp[i][j][1]=max\left\{ \begin{matrix}
 max\left\{ 
 dp[i-1][j-1][1],dp[i-1][j-1][0]
@@ -260,8 +264,8 @@ dp[i-d][j-d][1],dp[i-d][j-d][0]
 dp[i][j][0]=max\left\{ 
 dp[i-1][j][1],dp[i-1][j][0]
 \right\}
-$$
-
+$
+<br>
 ```c
 //dp part     
 f[0][0][0] = 0;
@@ -385,25 +389,23 @@ void fac_init(ll x)
 
 ##### 一般树形dp方程，t为s儿子 ,考察s内s选不选时的方案数量
 
-$$
+<br>
+$
 dp[s][1] = \prod_t dp[t][0] 
 \\
 dp[s][0] = \prod_{t-t0}dp[t][0] + dp[t0][1]
-$$
+$
+<br>
 
 ##### 使用常用思路求反，求出s选不选时子树外部的方案数，有方程
 
-$$
-\frac{dp[s][0]}{dp[t][0]+dp[t][1]}为不选s时s子树除去t外的选点方案
-\\
-\frac {dp[s][1]}{dp[t][1]}为选s时s子树除去t外的选点方案
-$$
-
-
-$$
+<br>
+$
+\frac{dp[s][0]}{dp[t][0]+dp[t][1]}为不选s时s子树除去t外的选点方案 \\
+\frac {dp[s][1]}{dp[t][1]}为选s时s子树除去t外的选点方案 \\
 g[t][0] = g[s][0]  \times \frac{dp[s][0]}{dp[t][0]+dp[t][1]}+g[s][1] \times \frac {dp[s][1]}{dp[t][1]}\\g[t][1] = g[s][0]  \times \frac{dp[s][0]}{dp[t][0]+dp[t][1]}
-$$
-
+$
+<br>
 ```c
 void dfsf(ll u, ll fa)
 {
