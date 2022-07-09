@@ -78,7 +78,7 @@ border(s+a)=\left\{
  border(border(s)+x+a),x\neq a \\
  border(s)+x  ,x=a \\
 \end{matrix}
-\right\.
+\right.
 $
 
 ##### 注：这里x为border(s)之后的一位字符。
@@ -269,7 +269,7 @@ max\left\{ dp[i-d][j-d][1],dp[i-d][j-d][0]\right\}+1\\
 \right\.\\
 dp[i][j][0]=max\left\{ 
 dp[i-1][j][1],dp[i-1][j][0]
-\right\}.\\
+\right\}.
 
 $
 
