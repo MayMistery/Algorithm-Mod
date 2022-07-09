@@ -4,7 +4,7 @@
         MathJax.Hub.Config({
             tex2jax: {
             skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-            inlineMath: [['$','$']]
+            inlineMath: [['$$','$$']]
             }
         });
     </script>
@@ -249,13 +249,18 @@ max\left\{
 \right\}.
 
 $$
+
 找到递推式求解最高的连续胜场加分和即可，注意到若枚举连续胜场进行状态转移复杂度接近 
+
+
 $$ 
 
 O(nB^2).
 
 $$
+
 而题目只接受nB或者n方算法，考虑贪心，在可能能加星时，直接加，可得方程（到i局赢了j场
+
 $$
 
 dp[i][j][1]=max\left\{ \begin{matrix}
