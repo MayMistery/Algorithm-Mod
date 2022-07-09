@@ -4,7 +4,7 @@
         MathJax.Hub.Config({
             tex2jax: {
             skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-            inlineMath: [['$$','$$']]
+            inlineMath: [['$','$']]
             }
         });
     </script>
@@ -72,14 +72,14 @@ $$
 ##### 	注意到题目所定义的独特前缀与border的定义类似，而border也是KMP中所定义的next指针（或fail）。题目可转化为求border并维护border查询。注意到题目复杂度要求为接近O（nlog(n)）,考虑在tier树上维护border查询。对于求border，若用KMP求每个链的border时间复杂度接近n方，考虑树形dp，考虑到当对于字符串s增加一个字符a时，有如下表达式
 
 
-$$
+$
 border(s+a)=\left\{
 \begin{matrix}
  border(border(s)+x+a),x\neq a \\
  border(s)+x  ,x=a 
 \end{matrix}
 \right.
-$$
+$
 
 ##### 注：这里x为border(s)之后的一位字符。
 
@@ -242,26 +242,24 @@ void preSimul(int ll, int rr)
 详解 ：对于所获得积分可以列出式子
 
 
-$$
+$
 
 max\left\{ 
 1 + B - (n - B) + \sum \lfloor \frac {L}{d} \rfloor , 0\\
 \right\}.
 
-$$
+$
 
 找到递推式求解最高的连续胜场加分和即可，注意到若枚举连续胜场进行状态转移复杂度接近 
 
 
-$$ 
-
+$
 O(nB^2).
-
-$$
+$
 
 而题目只接受nB或者n方算法，考虑贪心，在可能能加星时，直接加，可得方程（到i局赢了j场
 
-$$
+$
 
 dp[i][j][1]=max\left\{ \begin{matrix}
 max\left\{ 
@@ -275,9 +273,9 @@ dp[i-d][j-d][1],dp[i-d][j-d][0]
 .\\
 dp[i][j][0]=max\left\{ 
 dp[i-1][j][1],dp[i-1][j][0]
-\right\}.
+\right\}.\\
 
-$$
+$
 
 ```c
 //dp part     
@@ -402,28 +400,28 @@ void fac_init(ll x)
 
 ##### 一般树形dp方程，t为s儿子 ,考察s内s选不选时的方案数量
 
-$$
+$
 
 dp[s][1] = \prod_t dp[t][0] 
 \\
 dp[s][0] = \prod_{t-t0}dp[t][0] + dp[t0][1].
 
-$$
+$
 
 ##### 使用常用思路求反，求出s选不选时子树外部的方案数，有方程
 
-$$
+$
 
 \frac{dp[s][0]}{dp[t][0]+dp[t][1]}为不选s时s子树除去t外的选点方案
 \\
 \frac {dp[s][1]}{dp[t][1]}为选s时s子树除去t外的选点方案.
 
-$$
+$
 
 
-$$
+$
 g[t][0] = g[s][0]  \times \frac{dp[s][0]}{dp[t][0]+dp[t][1]}+g[s][1] \times \frac {dp[s][1]}{dp[t][1]}\\g[t][1] = g[s][0]  \times \frac{dp[s][0]}{dp[t][0]+dp[t][1]}
-$$
+$
 
 ```c
 void dfsf(ll u, ll fa)
@@ -471,10 +469,3 @@ void dfsg(ll u, ll fa)
         printf("%lld\n", ans[i]);
     }
 ```
-
-
-
- 
-
-
-
