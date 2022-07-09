@@ -72,7 +72,7 @@ border(s+a)=
  border(border(s)+x+a),x\neq a \\
  border(s)+x  ,x=a 
 \end{matrix}
-\right\.
+\right.
 $
 <br>
 
