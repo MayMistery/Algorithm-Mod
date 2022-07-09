@@ -66,12 +66,13 @@ $
 <br>
 $
 
-border(s+a)=\left\{
+border(s+a)= 
+\left\{
 \begin{matrix}
  border(border(s)+x+a),x\neq a \\
  border(s)+x  ,x=a 
 \end{matrix}
-\right.
+\right\.
 $
 <br>
 
