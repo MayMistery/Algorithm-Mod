@@ -76,7 +76,7 @@ $
 border(s+a)=\left\{
 \begin{matrix}
  border(border(s)+x+a),x\neq a \\
- border(s)+x  ,x=a \\
+ border(s)+x  ,x=a 
 \end{matrix}
 \right\.
 $
@@ -264,7 +264,7 @@ $
 dp[i][j][1]=max\left\
 { \begin{matrix}
 max\left\{ dp[i-1][j-1][1],dp[i-1][j-1][0]\right\}\\
-max\left\{ dp[i-d][j-d][1],dp[i-d][j-d][0]\right\}+1\\
+max\left\{ dp[i-d][j-d][1],dp[i-d][j-d][0]\right\}+1
 \end{matrix}
 \right\.\\
 dp[i][j][0]=max\left\{ 
